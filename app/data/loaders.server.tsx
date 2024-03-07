@@ -15,7 +15,8 @@ async function fetchData(url: URL) {
   }
 }
 
-export async function allMusicLoader() {
+export async function allMusicLoader(query: string, page: string) {
+  const PAGE_SIZE = 4;
   const path = "/api/songs";
   const url = new URL(path, baseUrl);
 
@@ -31,6 +32,22 @@ export async function allMusicLoader() {
       audio: {
         fields: ["url", "alternativeText"],
       },
+    },
+    filters: {
+      $or: [
+        { title: { $containsi: query } },
+        {
+          artist: {
+            name: {
+              $containsi: query,
+            },
+          },
+        },
+      ],
+    },
+    pagination: {
+      pageSize: PAGE_SIZE,
+      page: page,
     },
   });
 
